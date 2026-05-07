@@ -1,3 +1,4 @@
+//Done
 import pool from "../config/db.js";
 
 export const retrieveAllJourneys = async () => {
@@ -55,6 +56,97 @@ export const retrieveJourneysReports = async () => {
         console.error(error);
     }
 }
+
+// GET journey by id
+export const retrieveJourneyById = async (id) => {
+    try {
+        const [rows,_] = await pool.query(
+            `SELECT * FROM journey_instance WHERE journey_id = ?`,
+            [id]
+        );
+        return rows[0];
+    } catch (error) {
+        console.log("Error happened in retrieveJourneyById query");
+        console.error(error);
+    }
+}
+
+// GET journeys count per train
+export const retrieveJourneysCountPerTrain = async () => {
+    try {
+        const [rows,_] = await pool.query(
+            `SELECT j.train_id, t.train_number, COUNT(*) as number_of_journeys
+             FROM journey_instance as j
+             JOIN train as t ON j.train_id = t.train_id
+             GROUP BY j.train_id`
+        );
+        return rows;
+    } catch (error) {
+        console.log("Error happened in retrieveJourneysCountPerTrain query");
+        console.error(error);
+    }
+}
+
+// GET seat availability per journey
+export const retrieveJourneySeats = async (journeyId) => {
+    try {
+        const [rows,_] = await pool.query(
+            `SELECT 
+                j.journey_id, t.train_number, c.carriage_number, c.class,
+                COUNT(s.seat_id) AS total_seats,
+                COUNT(CASE WHEN tk.ticket_id IS NULL THEN 1 END) as available_seats,
+                COUNT(CASE WHEN tk.ticket_id IS NOT NULL THEN 1 END) as used_seats
+             FROM carriage as c
+             JOIN seat AS s ON c.carriage_id = s.carriage_id
+             JOIN train AS t ON t.train_id = c.train_id
+             JOIN journey_instance as j ON j.train_id = t.train_id
+             LEFT JOIN ticket AS tk ON s.seat_id = tk.seat_id
+               AND tk.journey_id = j.journey_id
+             WHERE j.journey_id = ?
+             GROUP BY j.journey_id, c.carriage_id
+             ORDER BY c.carriage_id`,
+            [journeyId]
+        );
+        return rows;
+    } catch (error) {
+        console.log("Error happened in retrieveJourneySeats query");
+        console.error(error);
+    }
+}
+
+// POST create journey (admin)
+export const createJourney = async (data) => {
+    try {
+        const [result,_] = await pool.query(
+            `INSERT INTO journey_instance 
+             (train_id, route_id, departure_date_time, arrival_date_time, status)
+             VALUES (?, ?, ?, ?, ?)`,
+            [data.train_id, data.route_id, data.departure_date_time,
+             data.arrival_date_time, data.status]
+        );
+        return result.insertId;
+    } catch (error) {
+        console.log("Error happened in createJourney query");
+        console.error(error);
+    }
+}
+
+// PUT update journey (admin)
+export const updateJourney = async (id, data) => {
+    try {
+        const [result,_] = await pool.query(
+            `UPDATE journey_instance 
+             SET departure_date_time = ?, arrival_date_time = ?, status = ?
+             WHERE journey_id = ?`,
+            [data.departure_date_time, data.arrival_date_time, data.status, id]
+        );
+        return result.affectedRows;
+    } catch (error) {
+        console.log("Error happened in updateJourney query");
+        console.error(error);
+    }
+}
+
 
 ( async () => {
     // const res = await retrieveAllJourneys();
