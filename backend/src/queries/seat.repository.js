@@ -13,6 +13,19 @@ export const retrieveAllSeats = async () => {
     }
 }
 
+// GET seat (client)
+export const retrieveSeatById = async (seatId) => {
+    try {
+        const [seat, _] = await pool.query(`
+            SELECT * FROM seat WHERE seat_id = ?;
+        `, [seatId])
+        return seat;
+    } catch (error) {
+        console.log("Error happened in retrieveSeatById query");
+        console.error(error);
+    }
+}
+
 export const retrieveSeatsCountsPerCarriage = async () => {
     try {
         const [counts, _] = await pool.query(`
@@ -66,8 +79,84 @@ export const retrieveSeatsAvailability = async () => {
     }
 }
 
+// Creating seat (admin only) 
+export const createSeat = async (seat) => {
+    const { 
+        carriage_id, 
+        city, 
+        state, 
+        seat_number, 
+        seat_type
+    } = seat;
+    try {
+        const [newSeat, _] = await pool.query(`
+            INSERT INTO seat (carriage_id, city, state, seat_number, seat_type)
+            VALUES (?, ?, ?, ?, ?, ?);
+        `, [carriage_id, city, state, seat_number, seat_type])
+        return newSeat.insertId;
+    } catch (error) {
+        console.log("Error happened in createSeat query");
+        console.error(error);
+    }
+}
+
+// Updating seat (admin only) 
+export const updateSeat = async (seat) => {
+    const { seat_id, carriage_id, city, state, seat_number, seat_type } = seat;
+    try {
+        const [updatedSeat, _] = await pool.query(`
+            UPDATE seat
+            SET 
+                carriage_id = ?, 
+                city = ?, 
+                state = ?, 
+                seat_number = ?, 
+                seat_type = ?
+            WHERE seat_id = ?;
+        `, [carriage_id, city, state, seat_number, seat_type, seat_id])
+        return {
+            info: updatedSeat.info,
+            affectedRows: updatedSeat.affectedRows
+        };
+        /* Sample of returned meta info:
+                ResultSetHeader {
+                fieldCount: 0,
+                affectedRows: 1,
+                insertId: 0,
+                info: 'Rows matched: 1  Changed: 1  Warnings: 0',
+                serverStatus: 2,
+                warningStatus: 0,
+                changedRows: 1
+                }
+        */
+    } catch (error) {
+        console.log("Error happened in updateSeat query");
+        console.error(error);
+    }
+}
+
+// Deleting seat (admin only) 
+export const deleteSeat = async (seatId) => {
+    try {
+        const [deletedSeat, _] = await pool.query(`
+            DELETE FROM seat
+            WHERE seat_id = ?;
+        `, [seatId])
+        return deletedSeat.affectedRows;
+    } catch (error) {
+        console.log("Error happened in deleteSeat query");
+        console.error(error);
+    }
+}
 
 ( async () => {
-    const seats = await retrieveSeatsAvailability();
-    console.log(seats);
+    /* const seat = await updateSeat({
+        seat_id: '3083',
+        carriage_id: '13',
+        city: 'Karachi',
+        state: 'Karachi',
+        seat_number: '13',
+        seat_type: 'window'
+    });
+    console.log(seat); */
 })()

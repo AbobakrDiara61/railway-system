@@ -14,6 +14,19 @@ export const retrieveAllTrains = async () => {
     }
 }
 
+// GET train (client)
+export const retrieveTrainById = async (trainId) => {
+    try {
+        const [train, _] = await pool.query(`
+            SELECT * FROM train WHERE train_id = ?;
+        `, [trainId])
+        return train;
+    } catch (error) {
+        console.log("Error happened in retrieveTrainById query");
+        console.error(error);
+    }
+}
+
 export const retrieveTrainByStatus = async (status) => {
     try {
         const [trains, _] = await pool.query(`
@@ -121,9 +134,67 @@ export const retrieveTrainCapacity = async () => {
     }
 }
 
+// Creating train (admin only) 
+export const createTrain = async (train) => {
+    const { 
+        train_number, 
+        type, 
+        driver_name, 
+        status
+    } = train;
+    try {
+        const [newTrain, _] = await pool.query(`
+            INSERT INTO train (train_number, type, driver_name, status)
+            VALUES (?, ?, ?, ?);
+        `, [train_number, type, driver_name, status])
+        return newTrain.insertId;
+    } catch (error) {
+        console.log("Error happened in createTrain query");
+        console.error(error);
+    }
+}
+
+// Updating train (admin only) 
+export const updateTrain = async (train) => {
+    const { 
+        train_number, 
+        type, 
+        driver_name, 
+        status,
+        train_id
+    } = train;
+    try {
+        const [updatedTrain, _] = await pool.query(`
+            UPDATE train
+            SET train_number = ?, type = ?, driver_name = ?, status = ?
+            WHERE train_id = ?;
+        `, [train_number, type, driver_name, status, train_id])
+        return {
+            info: updatedTrain.info,
+            affectedRows: updatedTrain.affectedRows
+        };
+    } catch (error) {
+        console.log("Error happened in updateTrain query");
+        console.error(error);
+    }
+}
+
+// Deleting train (admin only) 
+export const deleteTrain = async (trainId) => {
+    try {
+        const [deletedTrain, _] = await pool.query(`
+            DELETE FROM train
+            WHERE train_id = ?;
+        `, [trainId])
+        return deletedTrain.affectedRows;
+    } catch (error) {
+        console.log("Error happened in deleteTrain query");
+        console.error(error);
+    }
+}
+
 (async () => {
     // console.log(await retrieveTrainByStatus("active"));
     // console.log(await retrieveTrainByType("Express"));
     // console.log(await retrieveTrainJourneys());
-    console.log(await retrieveTrainsCounts());
 })()

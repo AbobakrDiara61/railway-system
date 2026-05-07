@@ -147,10 +147,23 @@ export const updateJourney = async (id, data) => {
     }
 }
 
+// Deleting journey (admin) 
+export const deleteJourney = async (journeyId) => {
+    try {
+        const [deletedJourney, _] = await pool.query(`
+            DELETE FROM journey_instance
+            WHERE journey_id = ?;
+        `, [journeyId])
+        return deletedJourney.affectedRows;
+    } catch (error) {
+        console.log("Error happened in deleteJourney query");
+        console.error(error);
+    }
+}
 
 ( async () => {
     // const res = await retrieveAllJourneys();
     // const res = await retrieveTrainJourneys();
-    const res = await retrieveJourneysReports();
-    console.log(res);
+    // const res = await retrieveJourneysReports();
+    // console.log(res);
 })()
