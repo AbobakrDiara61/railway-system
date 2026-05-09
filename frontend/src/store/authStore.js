@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import api from '../api/axios';
 
 export const useAuthStore = create(
   persist(
@@ -30,6 +31,20 @@ export const useAuthStore = create(
         const { user } = get();
         return user?.role === 'superAdmin';
       },
+
+      validateAuth: async () => {
+        const { logout } = get();
+        try {
+          const res = await api.get('/auth/is-authenticated');
+          const { user } = res.data;
+          console.log({message: "Retreived User", user});
+          if (!user) return logout();
+          set({ user, isAuthenticated: true });
+        } catch (error) {
+          logout();
+          console.log({message: "Error in validateAuth", error});
+        }
+      }
     }),
     {
       name: 'railway-auth',

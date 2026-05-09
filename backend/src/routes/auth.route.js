@@ -5,7 +5,8 @@ import {
     logout,
     deleteAccount,
     verifyOTP,
-    generateOTPCode
+    generateOTPCode,
+    isAuthenticated
 } from "../controllers/auth.controller.js"
 import { protect } from '../middlewares/authMiddleware.js';
 
@@ -17,5 +18,6 @@ router.post("/logout", protect, logout);
 router.post("/verify-otp", protect, verifyOTP);
 router.post("/generate-otp", protect, generateOTPCode);
 router.delete("/delete-account", protect, deleteAccount);
+router.get("/is-authenticated", protect, isAuthenticated);
 
 export default router

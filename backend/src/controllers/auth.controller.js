@@ -82,7 +82,7 @@ const login = async (req, res) => {
         if(!isPasswordValid)
             return res.status(401).json({ message: "Invalid Password" });
 
-        const payload = { email, user_id };
+        const payload = { email, user_id: user._id };
         // const refreshToken = generateRefreshToken({ user_id });
         setupResponse(res, payload/* , refreshToken */);        
         
@@ -186,12 +186,35 @@ const generateOTPCode = async (req, res) => {
     }
 }
 
+const isAuthenticated = async (req, res) => {
+    try {
+        const { user_id } = req.user;
+        const user = await retrieveUser(user_id);
+        if(!user)
+            return res.status(404).json({ success: false, message: "User not found" });
+        return res.status(200).json({
+            success: true, 
+            user: { 
+                ...user, 
+                password_hash: undefined, 
+                OTPCode: undefined, 
+                OTPCodeExpiryDate: undefined, 
+                refresh_token: undefined 
+            } 
+        });
+    } catch (error) {
+        console.error("Error in isAuthenticated controller", error);
+        return res.status(500).json({ success: false, message: "The authentication process has failed" });
+    }
+}
+
 export {
     register,
     login,
     logout,
     deleteAccount,
     verifyOTP,
-    generateOTPCode
+    generateOTPCode,
+    isAuthenticated,
 };
 

@@ -1,11 +1,19 @@
+import { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
 const DEV_BYPASS = import.meta.env.DEV;
 
 export function ProtectedRoute({ children }) {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, validateAuth } = useAuthStore();
   const location = useLocation();
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      await validateAuth();
+    };
+    checkAuth();
+  }, []);
 
   // In development: if no auth, seed a demo passenger session automatically
   if (!isAuthenticated && DEV_BYPASS) {
