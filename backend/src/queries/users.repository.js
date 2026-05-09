@@ -13,6 +13,34 @@ export const retrieveAllUsers = async () => {
     }
 }
 
+// GET user (client)
+export const retrieveUser = async (userId) => {
+    try {
+        const [user, _] = await pool.query(`
+            SELECT * from users WHERE user_id = ?;
+        `, [userId])
+        return user[0];
+    } catch (error) {
+        console.log("Error happened in retrieveUser query");
+        console.error(error);
+    }
+}
+
+export const retrieveUserByEmail = async (email) => {
+    try {
+        const [user, _] = await pool.query(`
+            SELECT *
+            FROM users
+            WHERE email = ?;
+        `, [email])
+        return user[0];
+    } catch (error) {
+        console.log("Error happened in retrieveUserByEmail query");
+        console.error(error);
+    }
+}
+
+
 export const retrieveUsersBookings = async () => {
     try {
         const [users, _] = await pool.query(`
@@ -103,7 +131,7 @@ export const retrieveBookingCountsPerUser = async () => {
     }
 }
 
-export const retrieveUsersBookingsHistory = async (id) => {
+/* export const retrieveUsersBookingsHistory = async (id) => {
     try {
         const [users, _] = await pool.query(`
             SELECT full_name, B.booking_id, B.booking_date, 
@@ -128,12 +156,100 @@ export const retrieveUsersBookingsHistory = async (id) => {
         console.error(error);
     }
 }
+*/
+
+// Creating user (admin only) 
+export const createUser = async (user) => {
+    const { 
+        first_name, 
+        last_name, 
+        email, 
+        password_hash, 
+        phone, 
+        birth_date, 
+        national_id, 
+        passport_number, 
+        role, 
+        city, 
+        street, 
+        building
+    } = user;
+    try {
+        const [newUser, _] = await pool.query(`
+            INSERT INTO users (first_name, last_name, email, password_hash, phone, birth_date, national_id, passport_number, role, city, street, building)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        `, [first_name, last_name, email, password_hash, phone, birth_date, national_id, passport_number, role, city, street, building])
+        return newUser.insertId;
+    } catch (error) {
+        console.log("Error happened in createUser query");
+        console.error(error);
+    }
+}
+
+// Updating user (admin only) 
+export const updateUsersPassword = async (user) => {
+    const { 
+        password_hash, 
+        user_id
+    } = user;
+    try {
+        const [updatedUser, _] = await pool.query(`
+            UPDATE users
+            SET password_hash = ?
+            WHERE user_id = ?;
+        `, [password_hash, user_id])
+        return {
+            info: updatedUser.info,
+            affectedRows: updatedUser.affectedRows
+        };
+    } catch (error) {
+        console.log("Error happened in updateUser query");
+        console.error(error);
+    }
+}
+
+// Add refresh token and OTP Code
+export const updateRefreshToken = async (user) => {
+    const { 
+        refreshToken, 
+        user_id
+    } = user;
+    try {
+        const [updatedUser, _] = await pool.query(`
+            UPDATE users
+            SET refresh_token = ?
+            WHERE user_id = ?;
+        `, [refreshToken, user_id])
+        return {
+            info: updatedUser.info,
+            affectedRows: updatedUser.affectedRows
+        };
+    } catch (error) {
+        console.log("Error happened in updateUser query");
+        console.error(error);
+    }
+}
+
+// Deleting user (admin only) 
+export const deleteUser = async (userId) => {
+    try {
+        const [deletedUser, _] = await pool.query(`
+            DELETE FROM users
+            WHERE user_id = ?;
+        `, [userId])
+        return deletedUser.affectedRows;
+    } catch (error) {
+        console.log("Error happened in deleteUser query");
+        console.error(error);
+    }
+}
 
 // Testing Self Invoked Function
-(async () => {
+/* (async () => {
     try {
-        console.log((await retrieveUsersBookingsHistory('2')));
+        // console.log((await retrieveUsersBookingsHistory('2')));
+        console.log((await retrieveUserByEmail('omaribrahim@email.com')));
     } catch (error) {
         console.log(error);
     }
-})()
+})() */

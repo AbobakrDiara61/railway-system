@@ -4,11 +4,16 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
 // ── Route imports ─────────────────────────────────────────────
-import trainRoutes    from './routes/train.routes.js'
-import routeRoutes    from './routes/route.routes.js'
-import journeyRoutes  from './routes/journey.routes.js'
-import carriageRoutes from './routes/carriage.routes.js'
-import seatRoutes     from './routes/seat.routes.js'
+import trainRoutes    from './routes/train.route.js'
+import routeRoutes    from './routes/route.route.js'
+import journeyRoutes  from './routes/journey.route.js'
+import carriageRoutes from './routes/carriage.route.js'
+import seatRoutes     from './routes/seat.route.js'
+import usersRoutes    from './routes/users.route.js';
+import stationRoutes  from './routes/station.route.js';
+import bookingRoutes  from './routes/booking.route.js';
+import ticketRoutes   from './routes/ticket.route.js';
+import authRoutes   from './routes/auth.route.js';
 
 const app = express();
 dotenv.config({ quiet: true });
@@ -27,6 +32,11 @@ app.use('/api/routes',    routeRoutes);
 app.use('/api/journeys',  journeyRoutes);
 app.use('/api/carriages', carriageRoutes);
 app.use('/api/seats',     seatRoutes);
+app.use('/api/auth',      authRoutes);
+app.use('/api/users',     usersRoutes);
+app.use('/api/stations',  stationRoutes);
+app.use('/api/bookings',  bookingRoutes);
+app.use('/api/tickets',   ticketRoutes);
 
 // ── 404 handler ───────────────────────────────────────────────
 app.use((req, res) => {

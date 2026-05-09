@@ -12,6 +12,19 @@ export const retrieveAllStations = async () => {
     }
 }
 
+// GET station (client)
+export const retrieveStationById = async (stationId) => {
+    try {
+        const [station, _] = await pool.query(`
+            SELECT * FROM station WHERE station_id = ?;
+        `, [stationId])
+        return station;
+    } catch (error) {
+        console.log("Error happened in retrieveStationById query");
+        console.error(error);
+    }
+}
+
 export const retrieveNumberOfStationsPerCity = async () => {
     try {
         const [counts, _] = await pool.query(`
@@ -27,7 +40,64 @@ export const retrieveNumberOfStationsPerCity = async () => {
     }
 }
 
+// Creating station (admin only) 
+export const createStation = async (station) => {
+    const { 
+        station_name, 
+        city, 
+        state 
+    } = station;
+    try {
+        const [newStation, _] = await pool.query(`
+            INSERT INTO station (station_name, city, state)
+            VALUES (?, ?, ?);
+        `, [station_name, city, state])
+        return newStation.insertId;
+    } catch (error) {
+        console.log("Error happened in createStation query");
+        console.error(error);
+    }
+}
+
+// Updating station (admin only) 
+export const updateStation = async (station) => {
+    const { 
+        station_name, 
+        city, 
+        state, 
+        station_id
+    } = station;
+    try {
+        const [updatedStation, _] = await pool.query(`
+            UPDATE station
+            SET station_name = ?, city = ?, state = ?
+            WHERE station_id = ?;
+        `, [station_name, city, state, station_id])
+        return {
+            info: updatedStation.info,
+            affectedRows: updatedStation.affectedRows
+        };
+    } catch (error) {
+        console.log("Error happened in updateStation query");
+        console.error(error);
+    }
+}
+
+// Deleting station (admin only) 
+export const deleteStation = async (stationId) => {
+    try {
+        const [deletedStation, _] = await pool.query(`
+            DELETE FROM station
+            WHERE station_id = ?;
+        `, [stationId])
+        return deletedStation.affectedRows;
+    } catch (error) {
+        console.log("Error happened in deleteStation query");
+        console.error(error);
+    }
+}
+
 (async () => {
     // console.log(await retrieveAllStations());
-    console.log(await retrieveNumberOfStationsPerCity());
+    // console.log(await retrieveNumberOfStationsPerCity());
 })()
