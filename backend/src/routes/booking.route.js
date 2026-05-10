@@ -13,7 +13,7 @@ import { adminOnly } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', protect, createBookingHandler);
+router.post('/', protect, adminOnly ,createBookingHandler);
 router.put('/', protect, updateBookingHandler);
 router.delete('/:id', protect, adminOnly, deleteBookingHandler);
 router.get('/', protect, adminOnly, getAllBookings);
