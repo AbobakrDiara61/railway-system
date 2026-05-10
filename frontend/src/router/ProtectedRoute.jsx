@@ -15,21 +15,23 @@ export function ProtectedRoute({ children }) {
     checkAuth();
   }, []);
 
-  // In development: if no auth, seed a demo passenger session automatically
-  if (!isAuthenticated && DEV_BYPASS) {
-    // Auto-inject demo session so pages render without a real backend
-    const store = useAuthStore.getState();
-    if (!store.isAuthenticated) {
-      store.setAuth(
-        { id: 1, name: 'Demo Passenger', email: 'demo@rail.eg', role: 'passenger' },
-        'dev-token'
-      );
-    }
-  }
+  // // In development: if no auth, seed a demo passenger session automatically
+  // if (!isAuthenticated && DEV_BYPASS) {
+  //   // Auto-inject demo session so pages render without a real backend
+  //   const store = useAuthStore.getState();
+  //   if (!store.isAuthenticated) {
+  //     store.setAuth(
+  //       { id: 1, name: 'Demo Passenger', email: 'demo@rail.eg', role: 'passenger' },
+  //       'dev-token'
+  //     );
+  //   }
+  // }
 
-  if (!isAuthenticated && !DEV_BYPASS) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
+ if (!isAuthenticated) {
+  return <Navigate to="/login" state={{ from: location }} replace />;
+}
+
+ 
 
   return children;
 }

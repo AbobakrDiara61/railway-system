@@ -35,6 +35,8 @@ api.interceptors.response.use(
       window.location.href = '/login';
     } else if (status === 403) {
       window.location.href = '/access-denied';
+    //      console.error('403 Forbidden:', error.config.url);
+    // toast.error('Access denied: ' + error.config.url);
     } else if (status === 404) {
       toast.error('Resource not found.');
     } else if (status >= 500) {

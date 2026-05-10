@@ -6,13 +6,13 @@ import {
     getReport
 } from '../controllers/users.controller.js';
 import { protect } from '../middlewares/authMiddleware.js';
-import { superAdminOnly } from '../middlewares/roleMiddleware.js';
+import { adminOnly } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', protect, superAdminOnly, getAllUsers);
-router.get('/:id', protect, superAdminOnly, getUserById);
-router.get('/bookings', protect, superAdminOnly, getUsersBookings);
-router.get('/report', protect, superAdminOnly, getReport);
+router.get('/', protect, adminOnly, getAllUsers);
+router.get('/:id', protect, adminOnly, getUserById);
+router.get('/bookings', protect, adminOnly, getUsersBookings);
+router.get('/report', protect, adminOnly, getReport);
 
 export default router
