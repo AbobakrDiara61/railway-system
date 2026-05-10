@@ -26,6 +26,7 @@ export function LoginPage() {
       setAuth(user, token);
       toast.success(`Welcome back, ${user.name || 'traveller'}!`);
       navigate(user.role === 'admin' ? '/admin/dashboard' : '/');
+      
     } catch (err) {
       const msg = err.response?.data?.message || 'Invalid email or password';
       setError(msg);

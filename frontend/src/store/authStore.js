@@ -40,7 +40,7 @@ export const useAuthStore = create(
           if (!user) return logout();
           set({ user, isAuthenticated: true });
         } catch (error) {
-          logout();
+          if (!token) logout();
           console.log({message: "Error in validateAuth", error});
         }
       }

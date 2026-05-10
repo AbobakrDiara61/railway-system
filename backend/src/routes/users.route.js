@@ -7,7 +7,7 @@ import {
     deleteUserById,
 } from '../controllers/users.controller.js';
 import { protect } from '../middlewares/authMiddleware.js';
-import { adminOnly, superAdminOnly } from '../middlewares/roleMiddleware.js';
+import { adminOnly } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 

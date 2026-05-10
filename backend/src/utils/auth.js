@@ -22,6 +22,7 @@ const setupResponse = (res, payload/* , refreshToken */) => {
     const token = generateToken(payload);
 
     createCookie(res, 'token', token);
+    return token;
     // createCookie(res, 'refreshToken', refreshToken);
 };
 

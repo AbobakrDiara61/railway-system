@@ -11,5 +11,8 @@ const pool = mysql.createPool({
     database: process.env.MYSQL_DATABASE
 });
 
-
+pool.getConnection()
+  .then(() => console.log('Database connected successfully'))
+  .catch(err => console.error('Database connection failed:', err.message));
+  
 export default pool;

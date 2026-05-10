@@ -3,9 +3,15 @@ import { retrieveUser } from '../queries/users.repository.js';
 
 const protect = async (req, res, next) => {
     try {
-        const token = req.cookies.token;
+        let token = req.cookies.token;
+        
+        if (!token && req.headers.authorization) {
+            token = req.headers.authorization.split(' ')[1];
+        }
+        
         if(!token) 
             return res.status(401).json({ success: false, message: "Unauthorized: No Token Provided" });
+        
         const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
         if(!decoded) 
             return res.status(401).json({ success: false, message: "Unauthorized: Invalid Token" });
@@ -20,7 +26,6 @@ const protect = async (req, res, next) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 }
-
 export {
     protect 
 };
