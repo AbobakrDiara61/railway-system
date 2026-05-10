@@ -66,11 +66,17 @@ export const retrieveJourneysReports = async () => {
     }
 }
 
-// GET journey by id
 export const retrieveJourneyById = async (id) => {
     try {
         const [rows,_] = await pool.query(
-            `SELECT * FROM journey_instance WHERE journey_id = ?`,
+            `SELECT ji.*, r.route_name,
+                s1.station_name AS origin_station_name,
+                s2.station_name AS destination_station_name
+             FROM journey_instance ji
+             JOIN route r ON ji.route_id = r.route_id
+             JOIN station s1 ON r.origin_station_id = s1.station_id
+             JOIN station s2 ON r.destination_station_id = s2.station_id
+             WHERE ji.journey_id = ?`,
             [id]
         );
         return rows[0];
@@ -101,19 +107,20 @@ export const retrieveJourneySeats = async (journeyId) => {
     try {
         const [rows,_] = await pool.query(
             `SELECT 
-                j.journey_id, t.train_number, c.carriage_number, c.class,
-                COUNT(s.seat_id) AS total_seats,
-                COUNT(CASE WHEN tk.ticket_id IS NULL THEN 1 END) as available_seats,
-                COUNT(CASE WHEN tk.ticket_id IS NOT NULL THEN 1 END) as used_seats
-             FROM carriage as c
-             JOIN seat AS s ON c.carriage_id = s.carriage_id
-             JOIN train AS t ON t.train_id = c.train_id
-             JOIN journey_instance as j ON j.train_id = t.train_id
-             LEFT JOIN ticket AS tk ON s.seat_id = tk.seat_id
-               AND tk.journey_id = j.journey_id
+                s.seat_id,
+                s.seat_number,
+                s.seat_type,
+                c.carriage_id,
+                c.carriage_number,
+                c.class,
+                CASE WHEN tk.ticket_id IS NOT NULL THEN 'booked' ELSE 'available' END AS status
+             FROM journey_instance j
+             JOIN train t ON j.train_id = t.train_id
+             JOIN carriage c ON c.train_id = t.train_id
+             JOIN seat s ON s.carriage_id = c.carriage_id
+             LEFT JOIN ticket tk ON tk.seat_id = s.seat_id AND tk.journey_id = j.journey_id
              WHERE j.journey_id = ?
-             GROUP BY j.journey_id, c.carriage_id
-             ORDER BY c.carriage_id`,
+             ORDER BY c.carriage_number, s.seat_number`,
             [journeyId]
         );
         return rows;
