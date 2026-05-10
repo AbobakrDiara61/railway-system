@@ -14,7 +14,7 @@ const getAllUsers = async (req, res) => {
         const users = await retrieveAllUsers();
         if(users.length === 0)
             return res.status(404).json({ success: false, message: "No users are found" });
-        return res.status(200).json({ success: true, message: "All users are fetched successfully", users });
+       return res.status(200).json({ success: true, message: "All users are fetched successfully", data: users });
     } catch (error) {
         console.error("Error in getAllUsers controller", error);
         return res.status(500).json({ success: false, message: "Users retrieval has failed" });
@@ -56,7 +56,7 @@ const getUsersBookings = async (req, res) => {
         const users = await retrieveUsersBookings();
         if(users.length === 0)
             return res.status(404).json({ success: false, message: "No bookings are found" });
-        return res.status(200).json({ success: true, message: "Users bookings fetched successfully", data: { ...users[0] } });
+    return res.status(200).json({ success: true, message: "Users bookings fetched successfully", data: users });
     } catch (error) {
         console.error("Error in getUsersBookings controller", error);
         return res.status(500).json({ success: false, message: "Users bookings retrieval has failed" });
