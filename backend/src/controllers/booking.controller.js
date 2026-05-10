@@ -6,7 +6,10 @@ import {
     retrieveAllBookings,
     retrieveUserBookings,
     retrieveBookingHistory,
-    retrieveBookingHistoryForUser
+    retrieveBookingHistoryForUser,
+    cancelBooking,
+    retrieveUserBookingById,
+
 } from '../queries/booking.repository.js';
 
 const createBookingHandler = async (req, res) => {
@@ -84,6 +87,22 @@ const getUserBookings = async (req, res) => {
     }
 }
 
+const getUserBookingById = async (req, res) => {
+    try {
+        const { user_id } = req.user;
+        const { booking_id } = req.params;
+        if(!booking_id)
+            return res.status(400).json({ success: false, message: "Booking ID is required" });
+        const booking = await retrieveUserBookingById(user_id, booking_id);
+        if(booking.length === 0) 
+            return res.status(404).json({ success: false, message: "No bookings found for this user" });
+        return res.status(200).json({ success: true, message: "User bookings retrieved successfully", booking: booking[0] });
+    } catch (error) {
+        console.error({ message: "Error happened in getBookingById", error });
+        return res.status(500).json({ success: false, message: "Failed to retrieve user's booking" });
+    }
+}
+
 const getBookingHistory = async (req, res) => {
     try {
         const bookingHistory = await retrieveBookingHistory();
@@ -108,6 +127,20 @@ const getBookingHistoryForUser = async (req, res) => {
     }
 }
 
+const cancelBookingHandler = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if(!id)
+            return res.status(400).json({ success: false, message: "Booking ID is required" });
+        const result = await cancelBooking(id);
+        if(result.affectedRows === 0)
+            return res.status(404).json({ success: false, message: "Booking not found" });
+        return res.status(200).json({ success: true, message: "Booking cancelled successfully" });
+    } catch (error) {
+        console.error({ message: "Error happened in cancelBooking", error });
+        return res.status(500).json({ success: false, message: "Failed to cancel booking" });
+    }
+}
 
 export {
     createBookingHandler,
@@ -116,5 +149,7 @@ export {
     getAllBookings,
     getUserBookings,
     getBookingHistory,
-    getBookingHistoryForUser
+    getBookingHistoryForUser,
+    cancelBookingHandler,
+    getUserBookingById,
 };

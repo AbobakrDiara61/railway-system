@@ -7,6 +7,7 @@ import {
   retrieveTrainJourneys,
   retrieveSpecificTrainJourney,
   retrieveTrainCapacity,
+  retrieveScheduledTrainJourneys,
 } from "../queries/train.repository.js";
 
 // GET /api/trains
@@ -71,6 +72,16 @@ export const getTrainCounts = async (req, res) => {
 export const getTrainJourneys = async (req, res) => {
   try {
     const journeys = await retrieveTrainJourneys();
+    res.status(200).json({ success: true, data: journeys });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// GET /api/trains/scheduled-journeys
+export const getScheduledTrainJourneys = async (req, res) => {
+  try {
+    const journeys = await retrieveScheduledTrainJourneys();
     res.status(200).json({ success: true, data: journeys });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

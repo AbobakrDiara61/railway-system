@@ -1,8 +1,18 @@
+import { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { router } from './router';
+import { useAuthStore } from './store/authStore';
 
 export default function App() {
+  const { validateAuth } = useAuthStore();
+  useEffect(() => {
+    const checkAuth = async () => {
+      await validateAuth();
+    };
+    checkAuth();
+  }, []);
+
   return (
     <>
       <RouterProvider router={router} />

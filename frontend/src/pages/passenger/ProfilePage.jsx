@@ -6,6 +6,7 @@ import { updateProfile, changePassword } from '../../api/auth.api';
 import { getUserBookings } from '../../api/bookings.api';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { PageBackground } from '../../components/ui/PageBackground';
 import profileBg from '../../assets/profile_history_background.png';
 
 const RECENT_BOOKINGS = [
@@ -19,7 +20,7 @@ export function ProfilePage() {
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState({
-    name:  user?.name  || 'Karim Hassan',
+    name:  user?.full_name  || 'Karim Hassan',
     email: user?.email || 'karim.hassan@email.com',
     phone: user?.phone || '+20 123 456 7890',
   });
@@ -56,17 +57,8 @@ export function ProfilePage() {
   return (
     <div className="min-h-screen bg-navy relative overflow-hidden">
       {/* BG */}
-      <div className="fixed inset-0 pointer-events-none">
-        <img src={profileBg} alt="" className="w-full h-full object-cover opacity-90" />
-        <div className="absolute inset-0"
-          style={{ background:'linear-gradient(180deg,rgba(7,11,20,0.80) 0%,rgba(7,11,20,0.96) 100%)' }} />
-        {/* Pyramid silhouette glow */}
-        <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] opacity-10"
-          style={{ background:'radial-gradient(ellipse at 50% 100%,rgba(245,158,11,0.6) 0%,transparent 70%)' }} />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] opacity-10"
-          style={{ background:'radial-gradient(ellipse at 50% 100%,rgba(0,229,255,0.4) 0%,transparent 70%)' }} />
-      </div>
-
+      <PageBackground src={profileBg} opacity={0.8} fixed /
+      >
       <div className="relative z-10 max-w-5xl mx-auto px-4 py-10">
         {/* EGYPT RAIL label */}
         <div className="flex items-center gap-2 mb-8">
@@ -78,7 +70,7 @@ export function ProfilePage() {
 
         {/* Avatar hero card */}
         <motion.div initial={{ opacity:0, y:-20 }} animate={{ opacity:1, y:0 }}
-          className="glass-hover cursor-pointer rounded-2xl p-8 text-center mb-8 relative overflow-hidden"
+          className="glass-hover cursor-pointer rounded-2xl p-8 text-center mb-8 relative overflow-hidden backdrop-blur-sm"
           style={{ border:'1px solid rgba(0,229,255,0.12)' }}>
           {/* Glow ring */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -94,7 +86,11 @@ export function ProfilePage() {
                 border:'3px solid rgba(0,229,255,0.5)',
                 boxShadow:'0 0 30px rgba(0,229,255,0.25), 0 0 60px rgba(0,229,255,0.1)',
               }}>
-              <User className="w-12 h-12 text-[#00e5ff]" />
+              {user?.avatar ? (
+                <img src={user.avatar} alt="" className="w-full h-full object-cover rounded-full" />
+              ) : (
+                <User className="w-12 h-12 text-[#00e5ff]" />
+              )}
               {/* Online dot */}
               <div className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-[#00e5ff] border-2 border-[#070b14]" />
             </div>

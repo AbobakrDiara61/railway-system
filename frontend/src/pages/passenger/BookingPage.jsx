@@ -5,6 +5,7 @@ import { Train, User, CreditCard, CheckCircle, ChevronRight, ArrowLeft,
          MapPin, Calendar, Clock, Wallet, Building } from 'lucide-react';
 import { createBooking } from '../../api/bookings.api';
 import toast from 'react-hot-toast';
+import { PageBackground } from '../../components/ui/PageBackground';
 import bookingBg from '../../assets/booking_flow_background.png';
 
 const STEPS = ['Route Selection', 'Passenger Details', 'Payment', 'Confirmation'];
@@ -73,19 +74,20 @@ export function BookingPage() {
 
   return (
     <div className="min-h-screen bg-navy relative">
+      <PageBackground src={bookingBg} opacity={0.15} fixed />
+
       {/* BG */}
-      <div className="fixed inset-0 pointer-events-none">
+      {/* <div className="fixed inset-0 pointer-events-none">
         <img src={bookingBg} alt="" className="w-full h-full object-cover opacity-15" />
         <div className="absolute inset-0" style={{
           background:'linear-gradient(180deg,rgba(7,11,20,0.75) 0%,rgba(7,11,20,0.92) 100%)'
-        }} />
+        }} /> */}
         {/* Egyptian column decorations */}
-        <div className="absolute top-0 left-0 w-48 h-full opacity-5"
+       {/*  <div className="absolute top-0 left-0 w-48 h-full opacity-5"
           style={{ background:'linear-gradient(to right,rgba(245,158,11,0.4),transparent)' }} />
         <div className="absolute top-0 right-0 w-48 h-full opacity-5"
           style={{ background:'linear-gradient(to left,rgba(245,158,11,0.4),transparent)' }} />
-      </div>
-
+      </div> */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
         {/* Back button */}
         <button onClick={() => navigate(-1)}

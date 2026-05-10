@@ -1,11 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShieldOff, Home, ArrowLeft } from 'lucide-react';
+import { PageBackground } from '../components/ui/PageBackground';
+import supportBg from '../assets/support_and_help_background.png';
 
 export function AccessDeniedPage() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-navy flex items-center justify-center px-4">
+    <div className="min-h-screen bg-navy flex items-center justify-center px-4 relative overflow-hidden">
+      <PageBackground src={supportBg} opacity={0.5} />
+
       <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
         className="glass p-12 rounded-2xl text-center max-w-md w-full">
         <div className="w-20 h-20 rounded-full bg-red-500/15 flex items-center justify-center mx-auto mb-6">

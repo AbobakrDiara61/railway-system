@@ -38,6 +38,32 @@ export const retrieveUserBookings = async (userId) => {
     }
 }
 
+// GET user's booking by ID (client)
+export const retrieveUserBookingById = async (userId, bookingId) => {
+    try {
+        const [booking, _] = await pool.query(`
+            SELECT full_name, B.booking_id, B.booking_date, 
+            B.total_amount, B.payment_status, 
+            JI.journey_id, r.route_name, s1.station_name as origin,
+            s2.station_name as destination,
+            departure_date_time, arrival_date_time
+            
+            FROM users as U
+            JOIN booking as B ON U.user_id = B.user_id
+            JOIN ticket as TK on B.booking_id = TK.booking_id
+            JOIN journey_instance as JI ON TK.journey_id = JI.journey_id
+            JOIN route as R ON R.route_id = JI.route_id
+            JOIN station S1 ON R.origin_station_id = S1.station_id
+            JOIN station S2 ON R.destination_station_id = S2.station_id
+            WHERE U.user_id = ? AND B.booking_id = ?;
+        `, [userId, bookingId])
+        return booking;
+    } catch (error) {
+        console.log("Error happened in retrieveUserBookingById query");
+        console.error(error);
+    }
+}
+
 export const retrieveBookingHistory = async () => {
     try {
         const [users, _] = await pool.query(`
@@ -139,6 +165,32 @@ export const updateBooking = async (booking) => {
                 changedRows: 1
                 }
         */
+    } catch (error) {
+        console.log("Error happened in updateBooking query");
+        console.error(error);
+    }
+}
+
+// Updating booking information (admin only) 
+export const cancelBooking = async (bookingId) => {
+    try {
+        const [updatedBooking, _] = await pool.query(`
+            UPDATE booking
+            SET payment_status = 'cancelled'
+            WHERE booking_id = ?;
+        `, [bookingId]);
+
+        await pool.query(`
+            UPDATE ticket
+            SET status = 'cancelled'
+            WHERE booking_id = ?;
+        `, [bookingId]);
+        
+        return {
+            info: updatedBooking.info,
+            affectedRows: updatedBooking.affectedRows
+        };
+
     } catch (error) {
         console.log("Error happened in updateBooking query");
         console.error(error);

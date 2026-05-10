@@ -5,7 +5,6 @@ import { Train, Eye, EyeOff, AlertCircle, Zap } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { login } from '../../api/auth.api';
 import toast from 'react-hot-toast';
-import authBg from '../../assets/auth_page_background.png';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -36,18 +35,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-navy flex items-center justify-center px-4 relative overflow-hidden">
-      {/* BG */}
-      <div className="absolute inset-0">
-        <img src={authBg} alt="" className="w-full h-full object-cover opacity-25" />
-        <div className="absolute inset-0"
-          style={{ background:'linear-gradient(135deg,rgba(7,11,20,0.80) 0%,rgba(7,11,20,0.95) 100%)' }} />
-        {/* Glow blobs */}
-        <div className="absolute top-1/4 right-1/4 w-80 h-80 rounded-full opacity-15"
-          style={{ background:'radial-gradient(circle,rgba(0,229,255,0.5) 0%,transparent 70%)' }} />
-        <div className="absolute bottom-1/4 left-1/4 w-64 h-64 rounded-full opacity-10"
-          style={{ background:'radial-gradient(circle,rgba(245,158,11,0.6) 0%,transparent 70%)' }} />
-      </div>
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
 
       <motion.div
         initial={{ opacity:0, y:30, scale:0.97 }}

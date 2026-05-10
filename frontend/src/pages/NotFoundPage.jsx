@@ -1,11 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Train, Home, Search } from 'lucide-react';
+import { PageBackground } from '../components/ui/PageBackground';
+import stationBg from '../assets/station_network_background.png';
 
 export function NotFoundPage() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-navy flex items-center justify-center px-4">
+    <div className="min-h-screen bg-navy flex items-center justify-center px-4 relative overflow-hidden">
+      <PageBackground src={stationBg} opacity={0.15} />
+
       <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
         className="text-center max-w-md w-full">
         {/* Animated train */}

@@ -8,6 +8,7 @@ import {
   getTrainJourneys,
   searchTrains,
   getTrainCapacity,
+  getScheduledTrainJourneys,
 } from "../controllers/train.controller.js";
  import { protect } from "../middlewares/authMiddleware.js";
 
@@ -21,6 +22,9 @@ router.get("/search", protect,searchTrains);
 // GET /api/trains/journeys
 // Returns all trains with their associated journeys
 router.get("/journeys", protect,getTrainJourneys);
+// GET /api/trains/scheduled-journeys
+// Returns all trains with their associated scheduled journeys
+router.get("/scheduled-journeys", protect, getScheduledTrainJourneys);
  
 // ── Passenger (logged in) ─────────────────────────────────────
  

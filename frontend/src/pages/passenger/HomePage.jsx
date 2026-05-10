@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Calendar, ArrowLeftRight, Train, Shield, Ticket, ChevronRight, Wifi, Zap } from 'lucide-react';
 import { formatDate } from '../../utils/formatDate';
+import { PageBackground } from '../../components/ui/PageBackground';
 import homeBg from '../../assets/railway_home_screen.png';
 
 const popularRoutes = [
@@ -46,24 +47,7 @@ export function HomePage() {
     <div className="bg-navy">
       {/* ── HERO ── */}
       <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
-        {/* Full-bleed background */}
-        <div className="absolute inset-0">
-          <img
-            src={homeBg}
-            alt="Egyptian Railway"
-            className="w-full h-full object-cover opacity-40"
-          />
-          {/* Overlay gradient */}
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(to bottom, rgba(7,11,20,0.55) 0%, rgba(7,11,20,0.75) 60%, #070b14 100%)'
-          }} />
-          {/* Cyan radial glow top-right */}
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-20"
-            style={{ background: 'radial-gradient(circle, rgba(0,229,255,0.4) 0%, transparent 70%)' }} />
-          {/* Gold radial glow bottom-left */}
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-15"
-            style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.5) 0%, transparent 70%)' }} />
-        </div>
+        <PageBackground src={homeBg} opacity={0.4} />
 
         {/* Content */}
         <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 w-full">

@@ -75,7 +75,7 @@ export const retrieveTrainJourneys = async () => {
     try {
         const [trains, _] = await pool.query(`
             SELECT DISTINCT t.train_id, t.train_number, t.type, 
-                j.journey_id, j.departure_date_time, j.arrival_date_time,
+                j.journey_id, j.departure_date_time, j.arrival_date_time, route_name,
                 r.distance_km, s1.station_name as origin, s2.station_name as destination
             FROM train AS T
             JOIN journey_instance AS J ON T.train_id = J.train_id
@@ -91,12 +91,33 @@ export const retrieveTrainJourneys = async () => {
     }
 }
 
+export const retrieveScheduledTrainJourneys = async () => {
+    try {
+        const [trains, _] = await pool.query(`
+            SELECT DISTINCT t.train_id, t.train_number, t.type, 
+                j.journey_id, j.departure_date_time, j.arrival_date_time, r.route_name,
+                r.distance_km, s1.station_name as origin, s2.station_name as destination
+            FROM train AS T
+            JOIN journey_instance AS J ON T.train_id = J.train_id
+            JOIN route R ON J.route_id = R.route_id
+            JOIN station S1 ON R.origin_station_id = S1.station_id
+            JOIN station S2 ON R.destination_station_id = S2.station_id
+            WHERE J.status = 'scheduled'
+            ORDER BY j.departure_date_time;
+        `)
+        return trains;
+    } catch (error) {
+        console.log("Error happened in retrieveScheduledTrainJourneys query");
+        console.error(error);
+    }
+}
+
 export const retrieveSpecificTrainJourney = async (params) => {
     const { originCity, destinationCity, status } = params;
     try {
         const [trains, _] = await pool.query(`
             SELECT DISTINCT t.train_id, t.train_number, t.type, 
-                j.journey_id, j.departure_date_time, j.arrival_date_time,
+                j.journey_id, j.departure_date_time, j.arrival_date_time, route_name,
                 r.distance_km, s1.station_name as origin, s2.station_name as destination
             FROM train AS T
             JOIN journey_instance AS J ON T.train_id = J.train_id

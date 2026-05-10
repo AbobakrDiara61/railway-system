@@ -37,7 +37,6 @@ export const useAuthStore = create(
         try {
           const res = await api.get('/auth/is-authenticated');
           const { user } = res.data;
-          console.log({message: "Retreived User", user});
           if (!user) return logout();
           set({ user, isAuthenticated: true });
         } catch (error) {

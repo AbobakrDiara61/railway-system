@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.post('/', protect, adminOnly, createStationHandler);
 router.put('/', protect, adminOnly, updateStationHandler);
-router.delete('/:id', protect, superAdminOnly, deleteStationnHandler);
+router.delete('/:id', protect, adminOnly, deleteStationnHandler);
 router.get('/:id', protect, getStationById);
 router.get('/', protect, getAllStations);
 router.get('/report', protect, adminOnly, getReport);

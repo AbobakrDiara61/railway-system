@@ -34,6 +34,7 @@ api.interceptors.response.use(
       toast.error('Session expired. Please login again.');
       window.location.href = '/login';
     } else if (status === 403) {
+      toast.error('You are not authorized to access this page.');
       window.location.href = '/access-denied';
     } else if (status === 404) {
       toast.error('Resource not found.');

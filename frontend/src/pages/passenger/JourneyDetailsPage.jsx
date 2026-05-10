@@ -6,6 +6,7 @@ import { getJourneyById, getJourneySeats } from '../../api/journeys.api';
 import { getCarriagesByTrain } from '../../api/carriages.api';
 import { formatPrice } from '../../utils/formatPrice';
 import toast from 'react-hot-toast';
+import { PageBackground } from '../../components/ui/PageBackground';
 import journeyBg from '../../assets/booking_flow_background.png';
 
 // Simulate rich seat map data matching the Stitch reference
@@ -99,13 +100,14 @@ export function JourneyDetailsPage() {
 
   return (
     <div className="min-h-screen bg-navy relative overflow-hidden">
+      <PageBackground src={journeyBg} opacity={0.2} fixed />
       {/* BG */}
-      <div className="fixed inset-0 pointer-events-none">
+      {/* <div className="fixed inset-0 pointer-events-none">
         <img src={journeyBg} alt="" className="w-full h-full object-cover opacity-20" />
         <div className="absolute inset-0"
           style={{ background:'radial-gradient(ellipse at 20% 50%, rgba(168,85,247,0.10) 0%, transparent 55%), linear-gradient(180deg,rgba(7,11,20,0.7) 0%,rgba(7,11,20,0.9) 100%)' }} />
-      </div>
-
+      </div> */}
+      
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
         {/* Journey info bar */}
         <motion.div initial={{ opacity:0, y:-16 }} animate={{ opacity:1, y:0 }}
