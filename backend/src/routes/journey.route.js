@@ -23,12 +23,12 @@ const router = express.Router();
 
 // GET /api/journeys
 // Returns all journeys
-router.get("/",       protect,    getAllJourneys);    
+router.get("/",         getAllJourneys);    
 
 
 // GET /api/journeys/trains
 // Returns all journeys with their train info// GET /api/journeys
-router.get("/trains",   protect,  getTrainJourneys);      
+router.get("/trains",    getTrainJourneys);      
 
 // GET /api/journeys/count
 // Returns journey count grouped per train// GET /api/journeys/trains

@@ -1,28 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Calendar, ArrowLeftRight, Train, Shield, Ticket, ChevronRight, Wifi, Zap } from 'lucide-react';
+import { MapPin, Calendar, ArrowLeftRight, Train, Shield, Ticket, ChevronRight } from 'lucide-react';
 import { formatDate } from '../../utils/formatDate';
 import homeBg from '../../assets/railway_home_screen.png';
+import { getJourneys } from '../../api/journeys.api.js';
 
-const popularRoutes = [
-  {
-    from: 'Cairo', to: 'Alexandria',
-    fromSub: 'Ramses Station', toSub: 'Misr Station',
-    duration: '2h 30m', price: '350', img: 'https://images.unsplash.com/photo-1568454537842-d933259bb258?w=400&q=70',
-  },
-  {
-    from: 'Luxor', to: 'Aswan',
-    fromSub: 'Luxor Central', toSub: 'Aswan Station',
-    duration: '3h 45m', price: '350', img: 'https://images.unsplash.com/photo-1539768942893-daf53e448371?w=400&q=70',
-  },
-  {
-    from: 'Giza', to: 'Sharm El Sheikh',
-    fromSub: 'Giza Station', toSub: 'East Sinai',
-    duration: '7h 00m', price: '350', img: 'https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=400&q=70',
-  },
-];
-
+ 
 const features = [
   { icon: Train,  title: 'Futuristic Fleet',    desc: 'Experience our high-speed, eco-friendly trains with luxury amenities.',      color: 'text-cyan-400', glow: 'rgba(0,229,255,0.2)' },
   { icon: Ticket, title: 'Seamless Booking',    desc: 'Effortlessly plan and manage your journeys with our intuitive platform.',    color: 'text-yellow-400', glow: 'rgba(245,158,11,0.2)' },
@@ -34,6 +18,26 @@ export function HomePage() {
   const [from, setFrom] = useState('');
   const [to, setTo]     = useState('');
   const [date, setDate] = useState(formatDate(new Date(), 'yyyy-MM-dd'));
+  const [popularRoutes, setPopularRoutes] = useState([]);
+
+  useEffect(() => {
+    getJourneys()
+      .then(res => {
+        console.log(res.data);
+    const journeys = (res.data.data || []).slice(0, 3).map(j => ({
+  from: j.origin_city,
+  to: j.destination_city,
+  fromSub: j.origin_station_name,
+  toSub: j.destination_station_name,
+  duration: '',
+  price: '350',
+  img: 'https://images.unsplash.com/photo-1568454537842-d933259bb258?w=400&q=70',
+}));
+        setPopularRoutes(journeys);
+      })
+      .catch(err => console.error(err));
+  }, []);
+
 
   const swap = () => { setFrom(to); setTo(from); };
 

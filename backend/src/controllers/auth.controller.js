@@ -18,7 +18,9 @@ import {
 
 const register = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, name } = req.body;
+const [first_name, ...rest] = (name || '').split(' ');
+const last_name = rest.join(' ') || first_name;
         
         if(!validator.isEmail(email)) 
             throw new Error("Invalid email address");
@@ -35,11 +37,14 @@ const register = async (req, res) => {
         const OTPCode = Math.floor(100000 + 900000 * Math.random());
         const OTPCodeExpiryDate = Date.now() + 3 * 60 * 1000; // 3 minutes
         const user_id = await createUser({ 
-            ...req.body,
-            password: undefined,
-            password_hash,
-            OTPCode,
-            OTPCodeExpiryDate
+             ...req.body,
+    first_name,
+    last_name,
+    role: 'passenger',
+    password: undefined,
+    password_hash,
+    OTPCode,
+    OTPCodeExpiryDate
         });
         const user = await retrieveUser(user_id);
 

@@ -4,7 +4,17 @@ import pool from "../config/db.js";
 export const retrieveAllJourneys = async () => {
     try {
         const [journeys, _] = await pool.query(`
-            SELECT * FROM journey_instance;
+            SELECT 
+                ji.*,
+                r.route_name,
+                s1.station_name AS origin_station_name,
+                s1.city AS origin_city,
+                s2.station_name AS destination_station_name,
+                s2.city AS destination_city
+            FROM journey_instance ji
+            JOIN route r ON ji.route_id = r.route_id
+            JOIN station s1 ON r.origin_station_id = s1.station_id
+            JOIN station s2 ON r.destination_station_id = s2.station_id
         `)
         return journeys;
     } catch (error) {
@@ -12,7 +22,6 @@ export const retrieveAllJourneys = async () => {
         console.error(error);
     }
 }
-
 export const retrieveTrainJourneys = async () => {
     try {
         const [result, _] = await pool.query(`
